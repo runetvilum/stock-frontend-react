@@ -14,6 +14,9 @@ const init = async () => {
   });
 };
 init();
-export default function handler(req, res) {
-    res.json(companies)
+export default async function handler(req, res) {
+  if (companies.length === 0) {
+    await init()
   }
+  res.json(companies)
+}
