@@ -9,7 +9,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import Chart from 'chart.js';
-
+/*
 export async function getStaticProps() {
   const res = await fetch('http://localhost:3030/tickers')
   const json = await res.json()
@@ -22,6 +22,7 @@ export async function getStaticProps() {
     },
   }
 }
+*/
 class MyChart extends React.Component {
   constructor(props) {
     super(props);
@@ -93,7 +94,7 @@ class MyChart extends React.Component {
     ) {
       if (this.props.ticker) {
         try {
-          let url = `http://localhost:3030/eod/${this.props.ticker.ticker}`
+          let url = `/api/tickers/${this.props.ticker.ticker}`
           if (this.props.startDate) {
             url = `${url}?date.gte=${this.props.startDate.toISOString().substr(0, 10)}`
             if (this.props.endDate) {
@@ -140,11 +141,20 @@ class MyChart extends React.Component {
     );
   }
 }
-export default function Index({ tickers }) {
+export default function Index() {
+  const [tickers, setTickers] = React.useState([]);
   const [ticker, setTicker] = React.useState(null);
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
   const [trend, setTrend] = React.useState(false);
+  React.useEffect(async () => {
+    const res = await fetch('/api/tickers')
+    const json = await res.json()
+    if (json.length > 0) {
+      json.splice(0, 1)
+    }
+    setTickers(json)
+  }, []);
   return (
     <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, display: 'flex', flexDirection: 'column', backgroundColor: '#000' }}>
       <div style={{ flex: '0 0 auto' }}>
